@@ -29,7 +29,7 @@ const dataModel = [
   {
     id: "19dZcvyZN1hbjBV4PPFIS-UyZOlHiRtzc",
     name: "Model 3",
-    desc: "<p>This is a design used for press a button to turn on the LED light.</p><strong>Find the code that makes the model work like a press a button to turn on the LED light.</strong>",
+    desc: "<p>This is a design used for press a button to turn on the LED light and turn off the LED light when the button is released.<p/><strong>Find the code that makes the model work like a press a button to turn on the LED light and turn off the LED light when the button is released.</strong>",
     answers: [
       { ans: "kQW9QHFJRUP", result: false },
       { ans: "6LW2aYKLBTf", result: false },
@@ -245,14 +245,10 @@ const App = () => {
                   </button>
                 </li>
                 <li>
-                  If you chose the correct answer, you will see a notification.
+                  If you choose the correct answer, you will win the game
                   <br />
-                  If you chose the wrong answer, you will hear a sound and you
-                  will see the wrong answer. After{" "}
-                  <span className="font-bold text-red-600">
-                    3 wrong answers
-                  </span>
-                  , you will lose the game.
+                  If you choose the incorrect answer, don't worry, you have 2
+                  more chances
                 </li>
               </ul>
               <p className="mt-5 italic text-red-400">
@@ -274,7 +270,7 @@ const App = () => {
                     Start Simulation
                   </div>
                 </button>{" "}
-                before ***
+                before chose the answer.***
               </p>
             </div>
           </div>
