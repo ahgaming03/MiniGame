@@ -5,6 +5,7 @@ const dataModel = [
   {
     id: "1-xCPzEUZ135Iu3c9J4INY0XtQebAFXNz",
     name: "Model 1",
+    desc: "<p>This is a design used for blinking LED lights.</p><strong>Find the code that makes the model work like a blinking LED light.</strong>",
     answers: [
       { ans: "7JXEWlokCwh", result: false },
       { ans: "2Pxqqc73sLR", result: false },
@@ -16,6 +17,7 @@ const dataModel = [
   {
     id: "10tNY2cZ4o1_9pRsq7BAV_gVhTC8HPnjm",
     name: "Model 2",
+    desc: "<p>This is a design used for a traffic light system.</p><strong>Find the code that makes the model work like a traffic light system.</strong>",
     answers: [
       { ans: "1epmW4grIzR", result: false },
       { ans: "5n6t6HxCf8g", result: true },
@@ -27,6 +29,7 @@ const dataModel = [
   {
     id: "19dZcvyZN1hbjBV4PPFIS-UyZOlHiRtzc",
     name: "Model 3",
+    desc: "<p>This is a design used for press a button to turn on the LED light.</p><strong>Find the code that makes the model work like a press a button to turn on the LED light.</strong>",
     answers: [
       { ans: "kQW9QHFJRUP", result: false },
       { ans: "6LW2aYKLBTf", result: false },
@@ -38,6 +41,7 @@ const dataModel = [
   {
     id: "1Yc7hC44CgaT2xRBeMrp83ZHy2yFtegBO",
     name: "Model 4",
+    desc: "<p>This is a model used for turning on the LED light at night.</p><strong>Find the code that makes the model work like turning on the LED light at night.</strong>",
     answers: [
       { ans: "ckYJJPcfO12", result: false },
       { ans: "hU1qBsd2MCL", result: true },
@@ -49,6 +53,7 @@ const dataModel = [
   {
     id: "1hQMFFWelZAPSXgHxbBL9ax7F253TBSQG",
     name: "Model 5",
+    desc: "<p>This is a model used for turning on the LED light when motion is detected.</p><strong>Find the code that makes the model work like turning on the LED light when motion is detected.</strong>",
     answers: [
       { ans: "hWeTSUh42JN", result: false },
       { ans: "kWAmJeVSzCG", result: false },
@@ -68,13 +73,16 @@ const App = () => {
   const [winner, setWinner] = useState(false);
   const [loser, setLoser] = useState(false);
   const [spinWheel, setSpinWheel] = useState(true);
+  const [disabledButton, setDisabledButton] = useState(false);
 
   useEffect(() => {
     if (wrongAnswer === 3) {
       setLoser(true);
+      setDisabledButton(true);
     }
     if (correctAnswer === 1) {
       setWinner(true);
+      setDisabledButton(true);
     }
   }, [wrongAnswer, correctAnswer]);
 
@@ -84,6 +92,8 @@ const App = () => {
     setWrongAnswer(0);
     setWinner(false);
     setLoser(false);
+    setSpinWheel(true);
+    setDisabledButton(false);
   };
 
   const handleSelectModel = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -114,6 +124,7 @@ const App = () => {
               handlePlayWrongSound();
               e.currentTarget.disabled = true;
               e.currentTarget.classList.remove("bg-lime-400");
+              e.currentTarget.classList.remove("hover:bg-lime-300");
               e.currentTarget.classList.add("bg-red-500");
             }
           }
@@ -123,15 +134,34 @@ const App = () => {
 
   return (
     <>
-      <Modal open={spinWheel} onClose={() => setLoser(spinWheel)}>
+      <button
+        onClick={handleNewGame}
+        className="ml-3 mt-3 w-28 rounded-lg bg-lime-400 bg-gradient-to-r px-5 py-2.5 text-center text-sm font-medium shadow-lg shadow-lime-500/50 hover:bg-lime-300 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-lime-300 dark:shadow-lg dark:shadow-lime-800/80 dark:focus:ring-lime-800"
+      >
+        Restart
+      </button>
+      <Modal open={spinWheel} onClose={() => setSpinWheel(false)}>
         <iframe
           src="https://wheelofnames.com/en8-9yx"
           width="800"
           height="600"
         ></iframe>
+        <select
+          name="Model"
+          className="mr-2"
+          onChange={handleSelectModel}
+          value={selectedModel}
+        >
+          <option value="none">--- Select a model ---</option>
+          {dataModel.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
+        </select>
         <button
           onClick={() => setSpinWheel(false)}
-          className="mt-3 inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800"
+          className={`${selectedModel === "none" ? "invisible" : ""} mt-3 inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800`}
         >
           Start
         </button>
@@ -147,26 +177,31 @@ const App = () => {
       </div>
       <div className="mx-12 my-10">
         <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-2xl border bg-[#004AAD] p-4 pb-8">
-            <div className="mb-2 text-2xl font-bold text-gray-200">Model</div>
-            <select name="Model" className="mb-2" onChange={handleSelectModel}>
-              <option value="none" selected>
-                --- Select a model ---
-              </option>
-              {dataModel.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+          <div className="flex flex-col gap-2 rounded-2xl border bg-[#004AAD] p-4 pb-8">
+            <div className="text-2xl font-bold text-gray-200">Model</div>
             <div className="flex justify-center">
               {selectedModel !== "none" ? (
-                <div className="sticky top-0">
+                <div className="flex flex-col gap-4">
                   <img
                     className="w-full bg-white"
                     src={`https://drive.google.com/thumbnail?id=${selectedModel}&sz=w10000`}
                     alt="Model"
                   />
+                  <div className="text-2xl font-bold text-white">
+                    Description
+                  </div>
+                  {dataModel.map((item) =>
+                    item.id === selectedModel ? (
+                      <div
+                        key={item.id}
+                        className="rounded-md bg-white p-3 text-2xl"
+                      >
+                        <div dangerouslySetInnerHTML={{ __html: item.desc }} />
+                      </div>
+                    ) : (
+                      ""
+                    ),
+                  )}
                 </div>
               ) : (
                 <img
@@ -176,6 +211,72 @@ const App = () => {
                 />
               )}
             </div>
+            <div className="text-2xl font-bold text-white">HOW TO PLAY</div>
+            <div className="rounded-md bg-white p-3 text-2xl">
+              <ul className="ml-8 list-decimal">
+                <li>
+                  Before start the game click{" "}
+                  <button className="inline-block rounded-sm border-2 border-gray-300 pr-1 text-base">
+                    <div className="flex items-center justify-center">
+                      <svg
+                        width="30"
+                        height="30"
+                        viewBox="0 0 30 30"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g fill-rule="evenodd">
+                          <path
+                            d="M24.268,7 L5.732,7 C4.775,7 4,7.776 4,8.732 L4,21.952 C4,22.531 4.469,23 5.048,23 L24.953,23 C25.531,23 26,22.531 26,21.952 L26,8.732 C26,7.776 25.224,7 24.268,7 L24.268,7 Z M12,8.99 C12,8.443 12.443,8 12.99,8 L13.01,8 C13.557,8 14,8.443 14,8.99 L14,9.01 C14,9.557 13.557,10 13.01,10 L12.99,10 C12.443,10 12,9.557 12,9.01 L12,8.99 L12,8.99 Z M9,8.99 C9,8.443 9.443,8 9.99,8 L10.01,8 C10.557,8 11,8.443 11,8.99 L11,9.01 C11,9.557 10.557,10 10.01,10 L9.99,10 C9.443,10 9,9.557 9,9.01 L9,8.99 L9,8.99 Z M6,8.99 C6,8.443 6.443,8 6.99,8 L7.01,8 C7.557,8 8,8.443 8,8.99 L8,9.01 C8,9.557 7.557,10 7.01,10 L6.99,10 C6.443,10 6,9.557 6,9.01 L6,8.99 L6,8.99 Z M25,11 L25,22 L5,22 L5,11 L25,11 L25,11 Z"
+                            transform=""
+                          ></path>
+                          <path d="M13,20.7 C12.805,20.7 12.609,20.637 12.444,20.507 L8.364,17.297 C8.147,17.127 8.021,16.866 8.021,16.59 C8.021,16.314 8.147,16.054 8.364,15.883 L12.444,12.672 C12.834,12.364 13.4,12.431 13.708,12.822 C14.016,13.213 13.948,13.779 13.558,14.086 L10.377,16.59 L13.558,19.093 C13.949,19.4 14.016,19.966 13.709,20.357 C13.53,20.582 13.266,20.7 13,20.7 L13,20.7 Z"></path>
+                          <path d="M17,20.9 C16.882,20.9 16.762,20.877 16.646,20.827 C16.189,20.632 15.978,20.102 16.173,19.645 L19.173,12.645 C19.368,12.188 19.897,11.975 20.355,12.172 C20.812,12.368 21.023,12.897 20.828,13.354 L17.828,20.354 C17.681,20.695 17.349,20.9 17,20.9 L17,20.9 Z"></path>
+                        </g>
+                      </svg>
+                      Code
+                    </div>
+                  </button>{" "}
+                  to see the code block.
+                </li>
+                <li>
+                  Read the description and chose the correct answer by clicking{" "}
+                  <button className="mb-2 me-2 w-28 rounded-lg bg-lime-400 bg-gradient-to-r px-5 py-2.5 text-center text-sm font-medium shadow-lg shadow-lime-500/50 hover:bg-lime-300 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-lime-300 dark:shadow-lg dark:shadow-lime-800/80 dark:focus:ring-lime-800">
+                    Answer
+                  </button>
+                </li>
+                <li>
+                  If you chose the correct answer, you will see a notification.
+                  <br />
+                  If you chose the wrong answer, you will hear a sound and you
+                  will see the wrong answer. After{" "}
+                  <span className="font-bold text-red-600">
+                    3 wrong answers
+                  </span>
+                  , you will lose the game.
+                </li>
+              </ul>
+              <p className="mt-5 italic text-red-400">
+                *** Don't press{" "}
+                <button className="inline-block rounded-sm border-2">
+                  <div className="flex items-center justify-center pr-2 text-base text-black">
+                    <svg
+                      width="30"
+                      height="30"
+                      viewBox="0 0 30 30"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10,21.0619852 L10,9.00198521 C10,8.19498521 10.906,7.71998521 11.569,8.17998521 L20.569,13.8129852 C21.126,14.1989852 21.147,15.0149852 20.61,15.4279852 L11.61,21.8549852 C10.952,22.3609852 10,21.8919852 10,21.0619852"
+                        transform="translate(0 0)"
+                        fill-rule="evenodd"
+                      ></path>
+                    </svg>
+                    Start Simulation
+                  </div>
+                </button>{" "}
+                before ***
+              </p>
+            </div>
           </div>
           <div className="flex h-full flex-col gap-2 rounded-2xl border bg-[#004AAD] p-4 pb-8">
             <div className="text-2xl font-bold text-gray-200">Answer</div>
@@ -183,7 +284,7 @@ const App = () => {
               <div className="text-white">Chose an answer:</div>
             ) : (
               <img
-                className="mt-8 w-full bg-white"
+                className="w-full bg-white"
                 src={`https://drive.google.com/thumbnail?id=1dXbE5PZ6Jplgks16vMMKKL2H8yJHo0Jk&sz=w10000`}
                 alt="Model"
               />
@@ -194,13 +295,17 @@ const App = () => {
                 item.answers.map((ans, index) => (
                   <div>
                     <button
-                      className="mb-2 me-2 w-28 rounded-lg bg-lime-400 bg-gradient-to-r px-5 py-2.5 text-center text-sm font-medium text-gray-900 shadow-lg shadow-lime-500/50 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-lime-300 dark:shadow-lg dark:shadow-lime-800/80 dark:focus:ring-lime-800"
+                      className={`${
+                        wrongAnswer === 3 || correctAnswer === 1 ? "" : ""
+                      } mb-2 me-2 w-28 rounded-lg bg-lime-400 bg-gradient-to-r px-5 py-2.5 text-center text-sm font-medium shadow-lg shadow-lime-500/50 hover:bg-lime-300 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-lime-300 dark:shadow-lg dark:shadow-lime-800/80 dark:focus:ring-lime-800`}
                       key={ans.ans}
                       value={ans.ans}
                       onClick={handleSelectAnswer}
+                      disabled={disabledButton}
                     >
                       Answer {index + 1}
                     </button>
+
                     <iframe
                       width="100%"
                       height="450"
@@ -233,6 +338,12 @@ const App = () => {
           >
             New game
           </button>
+          <button
+            onClick={() => setWinner(false)}
+            className="ms-3 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+          >
+            Cancel
+          </button>
         </div>
       </Modal>
       <Modal open={loser} onClose={() => setLoser(false)}>
@@ -260,6 +371,12 @@ const App = () => {
             className="inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800"
           >
             New game
+          </button>
+          <button
+            onClick={() => setLoser(false)}
+            className="ms-3 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+          >
+            Cancel
           </button>
         </div>
       </Modal>
