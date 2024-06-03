@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal } from "./Modal";
-
+import { SpinWheel } from "./SpinWheel";
 const dataModel = [
   {
     id: "1-xCPzEUZ135Iu3c9J4INY0XtQebAFXNz",
@@ -74,7 +74,7 @@ const App = () => {
   const [loser, setLoser] = useState(false);
   const [spinWheel, setSpinWheel] = useState(true);
   const [disabledButton, setDisabledButton] = useState(false);
-
+  const [model, setModel] = useState<string>("");
   useEffect(() => {
     if (wrongAnswer === 3) {
       setLoser(true);
@@ -94,10 +94,15 @@ const App = () => {
     setLoser(false);
     setSpinWheel(true);
     setDisabledButton(false);
+    setModel("");
   };
 
-  const handleSelectModel = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedModel(e.target.value);
+  const handleSelectModel = () => {
+    dataModel
+      .filter((item) => item.name === model)
+      .map((item) => {
+        setSelectedModel(item.id);
+      });
   };
 
   const handlePlayWrongSound = () => {
@@ -131,6 +136,20 @@ const App = () => {
         }),
       );
   };
+  const segments = dataModel.map((item) => item.name);
+
+  const wheelColors = (): string[] => {
+    let arr: string[] = [];
+    let colors = ["#EE4040", "#F0CF50", "#815CD1", "#3DA5E0", "#34A24F"];
+    segments.forEach(() => {
+      let color = colors.shift() as string;
+      arr.push(color);
+      colors.push(color);
+    });
+    return arr;
+  };
+
+  const segColors = wheelColors();
 
   return (
     <>
@@ -141,30 +160,29 @@ const App = () => {
         Restart
       </button>
       <Modal open={spinWheel} onClose={() => setSpinWheel(false)}>
-        <iframe
-          src="https://wheelofnames.com/en8-9yx"
-          width="800"
-          height="600"
-        ></iframe>
-        <select
-          name="Model"
-          className="mr-2"
-          onChange={handleSelectModel}
-          value={selectedModel}
-        >
-          <option value="none">--- Select a model ---</option>
-          {dataModel.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-        <button
-          onClick={() => setSpinWheel(false)}
-          className={`${selectedModel === "none" ? "invisible" : ""} mt-3 inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800`}
-        >
-          Start
-        </button>
+        <div className="text-center">
+          <SpinWheel
+            segments={segments}
+            segColors={segColors}
+            winningSegment={"5"}
+            onFinished={(spin) => setModel(spin)}
+            primaryColor="gray"
+            contrastColor="white"
+            buttonText="Spin"
+            isOnlyOnce={false}
+          />
+          <div className="text-3xl font-bold">{model}</div>
+
+          <button
+            onClick={() => {
+              setSpinWheel(false);
+              handleSelectModel();
+            }}
+            className={`${model === "" ? "invisible" : ""} mt-3 inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800`}
+          >
+            Start
+          </button>
+        </div>
       </Modal>
       <div className="fixed right-2 top-1 rounded-lg bg-red-500 text-white">
         {selectedModel !== "none" ? (
@@ -206,7 +224,8 @@ const App = () => {
               ) : (
                 <img
                   className="w-full bg-white"
-                  src={`https://drive.google.com/thumbnail?id=1dXbE5PZ6Jplgks16vMMKKL2H8yJHo0Jk&sz=w10000`}
+                  // src={`https://drive.google.com/thumbnail?id=1dXbE5PZ6Jplgks16vMMKKL2H8yJHo0Jk&sz=w10000`}
+                  src="/images/default.png"
                   alt="Model"
                 />
               )}
@@ -281,7 +300,8 @@ const App = () => {
             ) : (
               <img
                 className="w-full bg-white"
-                src={`https://drive.google.com/thumbnail?id=1dXbE5PZ6Jplgks16vMMKKL2H8yJHo0Jk&sz=w10000`}
+                // src={`https://drive.google.com/thumbnail?id=1dXbE5PZ6Jplgks16vMMKKL2H8yJHo0Jk&sz=w10000`}
+                src="/images/default.png"
                 alt="Model"
               />
             )}
