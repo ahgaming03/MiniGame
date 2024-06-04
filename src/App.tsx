@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Modal } from "./Modal";
-import { SpinWheel } from "./SpinWheel";
-const dataModel = [
+import { Wheel } from "react-custom-roulette";
+
+const data = [
   {
     id: "1-xCPzEUZ135Iu3c9J4INY0XtQebAFXNz",
     name: "Model 1",
@@ -13,6 +14,8 @@ const dataModel = [
       { ans: "7O6pgHcCHlW", result: true },
       { ans: "5Qe0mQA6p6c", result: false },
     ],
+    option: "Model 1",
+    style: { backgroundColor: "red" },
   },
   {
     id: "10tNY2cZ4o1_9pRsq7BAV_gVhTC8HPnjm",
@@ -25,6 +28,8 @@ const dataModel = [
       { ans: "1u8SP5QwqXx", result: false },
       { ans: "9s1cGEm1tYG", result: false },
     ],
+    option: "Model 2",
+    style: { backgroundColor: "blue" },
   },
   {
     id: "19dZcvyZN1hbjBV4PPFIS-UyZOlHiRtzc",
@@ -37,6 +42,8 @@ const dataModel = [
       { ans: "8yfqPCkkWLB", result: false },
       { ans: "dgL3r8i7dRl", result: true },
     ],
+    option: "Model 3",
+    style: { backgroundColor: "green" },
   },
   {
     id: "1Yc7hC44CgaT2xRBeMrp83ZHy2yFtegBO",
@@ -49,6 +56,8 @@ const dataModel = [
       { ans: "eTtpKSKBBWC", result: false },
       { ans: "cESWJZyV6dr", result: false },
     ],
+    option: "Model 4",
+    style: { backgroundColor: "yellow" },
   },
   {
     id: "1hQMFFWelZAPSXgHxbBL9ax7F253TBSQG",
@@ -61,10 +70,10 @@ const dataModel = [
       { ans: "e7v0zgVwQID", result: false },
       { ans: "gCEIAYbxtTe", result: true },
     ],
+    option: "Model 5",
+    style: { backgroundColor: "purple" },
   },
 ];
-
-// const
 
 const App = () => {
   const [selectedModel, setSelectedModel] = useState<string>("none");
@@ -74,7 +83,10 @@ const App = () => {
   const [loser, setLoser] = useState(false);
   const [spinWheel, setSpinWheel] = useState(true);
   const [disabledButton, setDisabledButton] = useState(false);
-  const [model, setModel] = useState<string>("");
+  const [mustSpin, setMustSpin] = useState(false);
+  const [prizeNumber, setPrizeNumber] = useState(0);
+  const [start, setIsStart] = useState<boolean>(false);
+
   useEffect(() => {
     if (wrongAnswer === 3) {
       setLoser(true);
@@ -94,15 +106,15 @@ const App = () => {
     setLoser(false);
     setSpinWheel(true);
     setDisabledButton(false);
-    setModel("");
+    setIsStart(false);
   };
 
-  const handleSelectModel = () => {
-    dataModel
-      .filter((item) => item.name === model)
-      .map((item) => {
-        setSelectedModel(item.id);
-      });
+  const handleSpinClick = () => {
+    if (!mustSpin) {
+      const newPrizeNumber = Math.floor(Math.random() * data.length);
+      setPrizeNumber(newPrizeNumber);
+      setMustSpin(true);
+    }
   };
 
   const handlePlayWrongSound = () => {
@@ -116,7 +128,7 @@ const App = () => {
   };
 
   const handleSelectAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
-    dataModel
+    data
       .filter((item) => item.id === selectedModel)
       .map((item) =>
         item.answers.map((ans) => {
@@ -136,20 +148,6 @@ const App = () => {
         }),
       );
   };
-  const segments = dataModel.map((item) => item.name);
-
-  const wheelColors = (): string[] => {
-    let arr: string[] = [];
-    let colors = ["#EE4040", "#F0CF50", "#815CD1", "#3DA5E0", "#34A24F"];
-    segments.forEach(() => {
-      let color = colors.shift() as string;
-      arr.push(color);
-      colors.push(color);
-    });
-    return arr;
-  };
-
-  const segColors = wheelColors();
 
   return (
     <>
@@ -161,27 +159,40 @@ const App = () => {
       </button>
       <Modal open={spinWheel} onClose={() => setSpinWheel(false)}>
         <div className="text-center">
-          <SpinWheel
-            segments={segments}
-            segColors={segColors}
-            winningSegment={"5"}
-            onFinished={(spin) => setModel(spin)}
-            primaryColor="gray"
-            contrastColor="white"
-            buttonText="Spin"
-            isOnlyOnce={false}
+          <Wheel
+            mustStartSpinning={mustSpin}
+            prizeNumber={prizeNumber}
+            data={data}
+            backgroundColors={["#3e3e3e", "#df3428"]}
+            fontSize={20}
+            outerBorderColor={"#3e3e3e"}
+            innerBorderColor={"#3e3e3e"}
+            onStopSpinning={() => {
+              setMustSpin(false);
+              setIsStart(true);
+            }}
           />
-          <div className="text-3xl font-bold">{model}</div>
+          {mustSpin ? null : (
+            <div className="text-3xl font-bold">{data[prizeNumber].name}</div>
+          )}
 
           <button
-            onClick={() => {
-              setSpinWheel(false);
-              handleSelectModel();
-            }}
-            className={`${model === "" ? "invisible" : ""} mt-3 inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800`}
+            onClick={handleSpinClick}
+            className="mt-3 inline-flex items-center rounded-lg bg-yellow-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-800"
           >
-            Start
+            SPIN
           </button>
+          {!start ? null : (
+            <button
+              onClick={() => {
+                setSpinWheel(false);
+                setSelectedModel(data[prizeNumber].id);
+              }}
+              className="ml-3 mt-3 inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800"
+            >
+              Start
+            </button>
+          )}
         </div>
       </Modal>
       <div className="fixed right-2 top-1 rounded-lg bg-red-500 text-white">
@@ -208,7 +219,7 @@ const App = () => {
                   <div className="text-2xl font-bold text-white">
                     Description
                   </div>
-                  {dataModel.map((item) =>
+                  {data.map((item) =>
                     item.id === selectedModel ? (
                       <div
                         key={item.id}
@@ -305,7 +316,7 @@ const App = () => {
                 alt="Model"
               />
             )}
-            {dataModel
+            {data
               .filter((item) => item.id === selectedModel)
               .map((item) =>
                 item.answers.map((ans, index) => (
