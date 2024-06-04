@@ -85,7 +85,7 @@ const App = () => {
   const [disabledButton, setDisabledButton] = useState(false);
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
-  const [start, setIsStart] = useState<boolean>(false);
+  const [isStart, setIsStart] = useState<boolean>(false);
 
   useEffect(() => {
     if (wrongAnswer === 3) {
@@ -155,7 +155,7 @@ const App = () => {
         onClick={handleNewGame}
         className="ml-3 mt-3 w-28 rounded-lg bg-lime-400 bg-gradient-to-r px-5 py-2.5 text-center text-sm font-medium shadow-lg shadow-lime-500/50 hover:bg-lime-300 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-lime-300 dark:shadow-lg dark:shadow-lime-800/80 dark:focus:ring-lime-800"
       >
-        Restart
+        New game
       </button>
       <Modal open={spinWheel} onClose={() => setSpinWheel(false)}>
         <div className="text-center">
@@ -172,17 +172,18 @@ const App = () => {
               setIsStart(true);
             }}
           />
-          {mustSpin ? null : (
+          {!isStart ? null : (
             <div className="text-3xl font-bold">{data[prizeNumber].name}</div>
           )}
 
-          <button
-            onClick={handleSpinClick}
-            className="mt-3 inline-flex items-center rounded-lg bg-yellow-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-800"
-          >
-            SPIN
-          </button>
-          {!start ? null : (
+          {!isStart ? (
+            <button
+              onClick={handleSpinClick}
+              className="mt-3 inline-flex items-center rounded-lg bg-yellow-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-800"
+            >
+              SPIN
+            </button>
+          ) : (
             <button
               onClick={() => {
                 setSpinWheel(false);
