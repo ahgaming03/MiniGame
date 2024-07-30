@@ -6,7 +6,15 @@ const data = [
   {
     id: "1-xCPzEUZ135Iu3c9J4INY0XtQebAFXNz",
     name: "Model 1",
-    desc: "<p>This is a design used for blinking LED lights.</p><strong>Find the code that makes the model work like a blinking LED light.</strong>",
+    imagePath: "/images/Model_1.png",
+    desc: (
+      <>
+        <p>This is a design used for blinking LED lights.</p>
+        <strong>
+          Find the code that makes the model work like a blinking LED light.
+        </strong>
+      </>
+    ),
     answers: [
       { ans: "7JXEWlokCwh", result: false },
       { ans: "2Pxqqc73sLR", result: false },
@@ -20,7 +28,15 @@ const data = [
   {
     id: "10tNY2cZ4o1_9pRsq7BAV_gVhTC8HPnjm",
     name: "Model 2",
-    desc: "<p>This is a design used for a traffic light system.</p><strong>Find the code that makes the model work like a traffic light system.</strong>",
+    imagePath: "/images/Model_2.png",
+    desc: (
+      <>
+        <p>This is a design used for a traffic light system.</p>
+        <strong>
+          Find the code that makes the model work like a traffic light system.
+        </strong>
+      </>
+    ),
     answers: [
       { ans: "1epmW4grIzR", result: false },
       { ans: "5n6t6HxCf8g", result: true },
@@ -34,7 +50,20 @@ const data = [
   {
     id: "19dZcvyZN1hbjBV4PPFIS-UyZOlHiRtzc",
     name: "Model 3",
-    desc: "<p>This is a design used for press a button to turn on the LED light and turn off the LED light when the button is released.<p/><strong>Find the code that makes the model work like a press a button to turn on the LED light and turn off the LED light when the button is released.</strong>",
+    imagePath: "/images/Model_3.png",
+    desc: (
+      <>
+        <p>
+          This is a design used for press a button to turn on the LED light and
+          turn off the LED light when the button is released.
+        </p>
+        <strong>
+          Find the code that makes the model work like a press a button to turn
+          on the LED light and turn off the LED light when the button is
+          released.
+        </strong>
+      </>
+    ),
     answers: [
       { ans: "kQW9QHFJRUP", result: false },
       { ans: "6LW2aYKLBTf", result: false },
@@ -48,7 +77,16 @@ const data = [
   {
     id: "1Yc7hC44CgaT2xRBeMrp83ZHy2yFtegBO",
     name: "Model 4",
-    desc: "<p>This is a model used for turning on the LED light at night.</p><strong>Find the code that makes the model work like turning on the LED light at night.</strong>",
+    imagePath: "/images/Model_4.png",
+    desc: (
+      <>
+        <p>This is a model used for turning on the LED light at night.</p>
+        <strong>
+          Find the code that makes the model work like turning on the LED light
+          at night.
+        </strong>
+      </>
+    ),
     answers: [
       { ans: "ckYJJPcfO12", result: false },
       { ans: "hU1qBsd2MCL", result: true },
@@ -62,7 +100,19 @@ const data = [
   {
     id: "1hQMFFWelZAPSXgHxbBL9ax7F253TBSQG",
     name: "Model 5",
-    desc: "<p>This is a model used for turning on the LED light when motion is detected.</p><strong>Find the code that makes the model work like turning on the LED light when motion is detected.</strong>",
+    imagePath: "/images/Model_5.png",
+    desc: (
+      <>
+        <p>
+          This is a model used for turning on the LED light when motion is
+          detected.
+        </p>
+        <strong>
+          Find the code that makes the model work like turning on the LED light
+          when motion is detected.
+        </strong>
+      </>
+    ),
     answers: [
       { ans: "hWeTSUh42JN", result: false },
       { ans: "kWAmJeVSzCG", result: false },
@@ -76,7 +126,9 @@ const data = [
 ];
 
 const App = () => {
-  const [selectedModel, setSelectedModel] = useState<string>("none");
+  const [selectedModel, setSelectedModel] = useState<string | undefined>(
+    "none",
+  );
   const [correctAnswer, setCorrectAnswer] = useState(0);
   const [wrongAnswer, setWrongAnswer] = useState(0);
   const [winner, setWinner] = useState(false);
@@ -114,6 +166,7 @@ const App = () => {
       const newPrizeNumber = Math.floor(Math.random() * data.length);
       setPrizeNumber(newPrizeNumber);
       setMustSpin(true);
+      setIsStart(false);
     }
   };
 
@@ -153,7 +206,7 @@ const App = () => {
     <>
       <button
         onClick={handleNewGame}
-        className="ml-3 mt-3 w-28 rounded-lg bg-lime-400 bg-gradient-to-r px-5 py-2.5 text-center text-sm font-medium shadow-lg shadow-lime-500/50 hover:bg-lime-300 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-lime-300 dark:shadow-lg dark:shadow-lime-800/80 dark:focus:ring-lime-800"
+        className="ml-3 mt-3 w-28 rounded-lg bg-lime-400 bg-gradient-to-r px-5 py-2.5 text-center text-sm font-medium shadow-lg shadow-lime-500/50 hover:bg-lime-300 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-lime-300"
       >
         New game
       </button>
@@ -175,21 +228,19 @@ const App = () => {
           {!isStart ? null : (
             <div className="text-3xl font-bold">{data[prizeNumber].name}</div>
           )}
-
-          {!isStart ? (
-            <button
-              onClick={handleSpinClick}
-              className="mt-3 inline-flex items-center rounded-lg bg-yellow-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-800"
-            >
-              SPIN
-            </button>
-          ) : (
+          <button
+            onClick={handleSpinClick}
+            className="mt-3 inline-flex items-center rounded-lg bg-yellow-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300"
+          >
+            SPIN
+          </button>
+          {!isStart ? null : (
             <button
               onClick={() => {
                 setSpinWheel(false);
                 setSelectedModel(data[prizeNumber].id);
               }}
-              className="ml-3 mt-3 inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800"
+              className="ml-3 mt-3 inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300"
             >
               Start
             </button>
@@ -201,42 +252,39 @@ const App = () => {
           <div className="p-3 font-bold">
             Wrong answer: <span>{wrongAnswer}</span>
           </div>
-        ) : (
-          ""
-        )}
+        ) : null}
       </div>
       <div className="mx-12 my-10">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
           <div className="flex flex-col gap-2 rounded-2xl border bg-[#004AAD] p-4 pb-8">
             <div className="text-2xl font-bold text-gray-200">Model</div>
             <div className="flex justify-center">
               {selectedModel !== "none" ? (
                 <div className="flex flex-col gap-4">
-                  <img
-                    className="w-full bg-white"
-                    src={`https://drive.google.com/thumbnail?id=${selectedModel}&sz=w10000`}
-                    alt="Model"
-                  />
-                  <div className="text-2xl font-bold text-white">
-                    Description
-                  </div>
-                  {data.map((item) =>
-                    item.id === selectedModel ? (
-                      <div
-                        key={item.id}
-                        className="rounded-md bg-white p-3 text-2xl"
-                      >
-                        <div dangerouslySetInnerHTML={{ __html: item.desc }} />
-                      </div>
-                    ) : (
-                      ""
-                    ),
-                  )}
+                  {data
+                    .filter((item) => item.id === selectedModel)
+                    .map((item) => (
+                      <>
+                        <img
+                          className="w-full bg-white"
+                          src={item.imagePath}
+                          alt="Model"
+                        />
+                        <div className="text-2xl font-bold text-white">
+                          Description
+                        </div>
+                        <div
+                          key={item.id}
+                          className="rounded-md bg-white p-3 text-2xl"
+                        >
+                          {item.desc}
+                        </div>
+                      </>
+                    ))}
                 </div>
               ) : (
                 <img
                   className="w-full bg-white"
-                  // src={`https://drive.google.com/thumbnail?id=1dXbE5PZ6Jplgks16vMMKKL2H8yJHo0Jk&sz=w10000`}
                   src="/images/default.png"
                   alt="Model"
                 />
@@ -270,21 +318,30 @@ const App = () => {
                   to see the code block.
                 </li>
                 <li>
-                  Read the description and chose the correct answer by clicking{" "}
-                  <button className="mb-2 me-2 w-28 rounded-lg bg-lime-400 bg-gradient-to-r px-5 py-2.5 text-center text-sm font-medium shadow-lg shadow-lime-500/50 hover:bg-lime-300 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-lime-300 dark:shadow-lg dark:shadow-lime-800/80 dark:focus:ring-lime-800">
+                  Read the description and chose the{" "}
+                  <span className="font-bold text-green-500">answer</span> by
+                  clicking{" "}
+                  <button className="mb-2 me-2 w-28 rounded-lg bg-lime-400 bg-gradient-to-r px-5 py-2.5 text-center text-sm font-medium shadow-lg shadow-lime-500/50 hover:bg-lime-300 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-lime-300">
                     Answer
                   </button>
                 </li>
                 <li>
-                  If you choose the correct answer, you will win the game
+                  If you choose the{" "}
+                  <span className="font-bold text-green-500">
+                    correct answer
+                  </span>{" "}
+                  , you will win the game.
                   <br />
-                  If you choose the incorrect answer, don't worry, you have 2
-                  more chances
+                  If you choose the{" "}
+                  <span className="font-bold text-red-500">
+                    incorrect answer
+                  </span>{" "}
+                  , don't worry, you have 2 more chances.
                 </li>
               </ul>
-              <p className="mt-5 italic text-red-400">
+              {/* <p className="mt-5 flex items-center italic text-red-400">
                 *** Don't press{" "}
-                <button className="inline-block rounded-sm border-2">
+                <button className="mx-2 inline-block rounded-sm border-2">
                   <div className="flex items-center justify-center pr-2 text-base text-black">
                     <svg
                       width="30"
@@ -302,7 +359,7 @@ const App = () => {
                   </div>
                 </button>{" "}
                 before chose the answer.***
-              </p>
+              </p> */}
             </div>
           </div>
           <div className="flex h-full flex-col gap-2 rounded-2xl border bg-[#004AAD] p-4 pb-8">
@@ -312,7 +369,6 @@ const App = () => {
             ) : (
               <img
                 className="w-full bg-white"
-                // src={`https://drive.google.com/thumbnail?id=1dXbE5PZ6Jplgks16vMMKKL2H8yJHo0Jk&sz=w10000`}
                 src="/images/default.png"
                 alt="Model"
               />
@@ -323,9 +379,7 @@ const App = () => {
                 item.answers.map((ans, index) => (
                   <div>
                     <button
-                      className={`${
-                        wrongAnswer === 3 || correctAnswer === 1 ? "" : ""
-                      } mb-2 me-2 w-28 rounded-lg bg-lime-400 bg-gradient-to-r px-5 py-2.5 text-center text-sm font-medium shadow-lg shadow-lime-500/50 hover:bg-lime-300 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-lime-300 dark:shadow-lg dark:shadow-lime-800/80 dark:focus:ring-lime-800`}
+                      className="mb-2 me-2 w-28 rounded-lg bg-lime-400 bg-gradient-to-r px-5 py-2.5 text-center text-sm font-medium shadow-lg shadow-lime-500/50 hover:bg-lime-300 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-lime-300"
                       key={ans.ans}
                       value={ans.ans}
                       onClick={handleSelectAnswer}
@@ -357,18 +411,16 @@ const App = () => {
               d="M528 448H112c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm64-320c-26.5 0-48 21.5-48 48 0 7.1 1.6 13.7 4.4 19.8L476 239.2c-15.4 9.2-35.3 4-44.2-11.6L350.3 85C361 76.2 368 63 368 48c0-26.5-21.5-48-48-48s-48 21.5-48 48c0 15 7 28.2 17.7 37l-81.5 142.6c-8.9 15.6-28.9 20.8-44.2 11.6l-72.3-43.4c2.7-6 4.4-12.7 4.4-19.8 0-26.5-21.5-48-48-48S0 149.5 0 176s21.5 48 48 48c2.6 0 5.2-.4 7.7-.8L128 416h384l72.3-192.8c2.5 .4 5.1 .8 7.7 .8 26.5 0 48-21.5 48-48s-21.5-48-48-48z"
             />
           </svg>
-          <h3 className="mb-5 text-3xl font-bold text-gray-700 dark:text-gray-600">
-            YOU WIN
-          </h3>
+          <h3 className="mb-5 text-3xl font-bold text-gray-700">YOU WIN</h3>
           <button
             onClick={handleNewGame}
-            className="inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800"
+            className="inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300"
           >
             New game
           </button>
           <button
             onClick={() => setWinner(false)}
-            className="ms-3 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+            className="ms-3 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100"
           >
             Cancel
           </button>
@@ -377,7 +429,7 @@ const App = () => {
       <Modal open={loser} onClose={() => setLoser(false)}>
         <div className="p-4 text-center md:p-5">
           <svg
-            className="h-30 w-30 mx-auto mb-4 text-red-600 dark:text-red-500"
+            className="h-30 w-30 mx-auto mb-4 text-red-600"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -391,18 +443,16 @@ const App = () => {
               d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
             />
           </svg>
-          <h3 className="mb-5 text-3xl font-bold text-gray-700 dark:text-gray-600">
-            YOU LOSE
-          </h3>
+          <h3 className="mb-5 text-3xl font-bold text-gray-700">YOU LOSE</h3>
           <button
             onClick={handleNewGame}
-            className="inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800"
+            className="inline-flex items-center rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300"
           >
             New game
           </button>
           <button
             onClick={() => setLoser(false)}
-            className="ms-3 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+            className="ms-3 rounded-lg border border-gray-400 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-200 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100"
           >
             Cancel
           </button>
