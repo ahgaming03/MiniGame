@@ -12,11 +12,11 @@ export const Modal: React.FC<propTypes> = ({ open, onClose, children }) => {
       className={`fixed inset-0 flex items-center justify-center transition-colors ${open ? "visible bg-black/20" : "invisible"}`}
     >
       <div
-        className={`rounded-lg bg-white p-6 shadow transition-all ${open ? "scale-100 opacity-100" : "scale-110 opacity-0"}`}
+        className={`rounded-lg bg-white p-4 shadow transition-all ${open ? "scale-100 opacity-100" : "scale-110 opacity-0"}`}
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute right-2 top-2 rounded-md border border-neutral-200 bg-white px-2 py-1 text-gray-400 hover:bg-gray-50 hover:text-gray-600"
+          className="absolute right-4 top-4 select-none rounded-md border border-neutral-200 bg-white px-2 py-1 text-gray-400 hover:bg-gray-50 hover:text-gray-600"
           onClick={onClose}
         >
           X
